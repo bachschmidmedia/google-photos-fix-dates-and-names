@@ -18,13 +18,21 @@ def log(msg, verbose=False):
         print(msg)
 
 
+# Get Timestamp from JSON-Data or Default time
+def get_timestamp_or_default(data, key):
+    try :
+        return data[key]['timestamp']
+    except KeyError:
+        return time()
+
+
 # Fix/Set the Date-Attributes from JSON-Data
 # into MODIFIED/CREATED File-Dates
 def set_dates(file, data):
     dates = [
-        int(data['photoTakenTime']['timestamp'] or time()),
-        int(data['creationTime']['timestamp'] or time()),
-        int(data['photoLastModifiedTime']['timestamp'] or time())
+        int(get_timestamp_or_default(data, 'photoTakenTime')),
+        int(get_timestamp_or_default(data, 'creationTime')),
+        int(get_timestamp_or_default(data, 'photoLastModifiedTime')),
     ]
     dates.sort()
     utime(file, (dates[0], dates[0]))
