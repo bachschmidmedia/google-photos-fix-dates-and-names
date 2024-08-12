@@ -20,7 +20,7 @@ def log(msg, verbose=False):
 
 # Get Timestamp from JSON-Data or Default time
 def get_timestamp_or_default(data, key):
-    try :
+    try:
         return data[key]['timestamp']
     except KeyError:
         return time()
@@ -51,7 +51,8 @@ def main_fix_file_names():
         fixed_name = sub(r'\.(.*)(\([0-9]\)).json', r'\2.\1.json', orig_name)
 
         if orig_name != fixed_name:
-            log('Renaming! \r\n"{}" \r\nto \r\n"{}" \r\n'.format(orig_name, fixed_name), True)
+            log('Renaming! \r\n"{}" \r\nto \r\n"{}" \r\n'.format(
+                orig_name, fixed_name), True)
             rename(
                 path.join(basedir, orig_name),
                 path.join(basedir, fixed_name)
@@ -76,9 +77,11 @@ def main_fix_file_attributes():
                     data = load(open(s_json))
                     set_dates(s_file, data)
                 else:
-                    log('   => ❌ File-Error on: \r\n❌ "{}" \r\n✅ "{}"'.format(s_file, s_json), True)
+                    log('   => ❌ File-Error on: \r\n❌ "{}" \r\n✅ "{}"'
+                        .format(s_file, s_json), True)
             else:
-                log('   => ❌ Json-Error on: \r\n❌ "{}" \r\n✅ "{}"'.format(s_json, s_file), True)
+                log('   => ❌ Json-Error on: \r\n❌ "{}" \r\n✅ "{}"'
+                    .format(s_json, s_file), True)
 
 
 if __name__ == '__main__':
@@ -106,6 +109,4 @@ if __name__ == '__main__':
                     print('❌ Not fixing File-attributes... ')
             else:
                 print('❌ cancelled')
-
-        else:
             print('❌ Is not a Directory!')
