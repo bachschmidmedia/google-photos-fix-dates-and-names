@@ -1,10 +1,15 @@
 # This is a sample Python script.
 from time import time
-from os import listdir, path, utime, rename
+from os import path, utime, rename
 from re import sub
 from json import load
+from glob import glob
 
 basedir = ''
+
+
+def list():
+    return glob(basedir + '/**', recursive=True)
 
 
 # Log information to TXT File
@@ -46,23 +51,26 @@ def set_dates(file, data):
 # x = re.sub("\.(.*)(\([0-9]\)).json", r'\2.\1.json', txt)
 
 def main_fix_file_names():
-    for file in listdir(basedir):
-        orig_name = path.basename(file)
-        fixed_name = sub(r'\.(.*)(\([0-9]\)).json', r'\2.\1.json', orig_name)
+    for entry in list():
+        if path.isfile(entry):
+            file = entry
+            orig_name = path.basename(file)
+            fixed_name = sub(r'\.(.*)(\([0-9]\)).json', r'\2.\1.json', orig_name)
 
-        if orig_name != fixed_name:
-            log('Renaming! \r\n"{}" \r\nto \r\n"{}" \r\n'.format(
-                orig_name, fixed_name), True)
-            rename(
-                path.join(basedir, orig_name),
-                path.join(basedir, fixed_name)
-            )
+            if orig_name != fixed_name:
+                log('Renaming! \r\n"{}" \r\nto \r\n"{}" \r\n'.format(
+                    orig_name, fixed_name), True)
+                rename(
+                    path.join(basedir, orig_name),
+                    path.join(basedir, fixed_name)
+                )
 
 
 # Main Attribute Fixing Function
 def main_fix_file_attributes():
-    for file in listdir(basedir):
-        if file.endswith('.json'):
+    for entry in list():
+        if path.isfile(entry) and entry.endswith('.json'):
+            file = entry
             s_json = path.join(basedir, file)
             s_file = path.join(basedir, path.splitext(s_json)[0])
 
@@ -94,7 +102,7 @@ if __name__ == '__main__':
         if path.isdir(basedir):
             print('✅ Is directory!')
 
-            if input('Should we continue with {} Files? (y/N) '.format(len(listdir(basedir)))) == 'y':
+            if input('Should we continue with {} Files? (y/N) '.format(len(glob(basedir)))) == 'y':
 
                 if input('Should we fix filenames like (1).JPG with Regex renaming? (y/N) ') == 'y':
                     print('✅ Fixing Names... ')
